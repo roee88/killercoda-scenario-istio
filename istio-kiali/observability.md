@@ -4,19 +4,6 @@ The services in our mesh are automatically observable, without adding any burden
 
 ## Kiali
 
-Kiali is a powerful UI dedicated to Istio. 
-
-Kiali has management features allow you to operate your mesh. For example:
-1. Enable sidecar injection to existing workloads
-2. Create routing rules
-3. Generate optimized Istio configurations from observed state
-
-Kiali has observability features including:
-1. Visualize your mesh as graphs
-2. Monitor mesh metrics
-3. Display workload access logs
-4. Distributed request tracing visibility
-
 [Access kiali via port 20001]({{TRAFFIC_HOST1_20001}}/).
 
 Customize the view as follows:
@@ -39,33 +26,41 @@ Feel free to spend more time exploring Kiali.
 
 We will revisit Kiali in a later lab to visualize traffic shifting such as when performing a blue-green or canary deployment.
 
-## Zipkin
+## Jaeger
 
-Launch the Zipkin dashboard:
+1. Install Jaeger
 
-```
-istioctl dashboard --address 0.0.0.0 zipkin
-```{{exec}}
+    ```
+    kubectl apply -f istio-1.15.0/samples/addons/jaeger.yaml
+    kubectl rollout status deployment/jaeger -n istio-system
+    ```{{exec}}
 
-[Access Zipkin via port 9411]({{TRAFFIC_HOST1_9411}}/).
+1. Launch the Jaeger dashboard:
 
-The Zipkin dashboard displays.
+    ```
+    istioctl dashboard --address 0.0.0.0 jaeger
+    ```{{exec}}
 
-- Click on the red '+' button and select _serviceName_.
-- Select the service named `travels.travel-agency` and click on the _Run Query_ button (lightblue) to the right.
+1. [Access Jaeger via port 16686]({{TRAFFIC_HOST1_16686}}/).
 
-A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
+The Jaeger dashboard displays.
 
-- Click the _Show_ button to the right of one of the traces having four (4) spans.
+- Select the service named `travels.travel-agency` and click on the _Find Traces_ button at the bottom.
+- Click one of the traces (circles at the top right) and view the end-to-end breakdown of the trace
 
 The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.
 
 Distributed tracing also helps us make sense of the flow of requests in a microservice architecture.
 
-### Zipkin Cleanup
+### Jaeger Cleanup
 
-Close the Zipkin dashboard.  Interrupt the `istioctl dashboard` command with _Ctrl+C_.
+Close the Jaeger dashboard.  Interrupt the `istioctl dashboard` command with _Ctrl+C_.
 
+Then uninstall it:
+
+```
+kubectl delete -f istio-1.15.0/samples/addons/jaeger.yaml
+```{{exec}}
 
 ## Prometheus
 
@@ -109,6 +104,14 @@ Grafana consumes these metrics to produce graphs on our behalf.
 
 ## Grafana
 
+1. Install Grafana
+
+    ```
+    kubectl apply -f istio-1.15.0/samples/addons/grafana.yaml
+    kubectl rollout status deployment/grafana -n istio-system
+    ```{{exec}}
+
+
 1. Launch the Grafana dashboard
 
     ```
@@ -122,10 +125,12 @@ Grafana consumes these metrics to produce graphs on our behalf.
 1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
 1. Navigate back to _Dashboards_ and explore the Istio Service Dashboard. 
 1. Navigate back to _Dashboards_ and explore the Istio Workload Dashboard.
-
-Feel free to further explore these dashboards.
-
-- Close the Grafana dashboard and terminate the corresponding `istioctl dashboard` command.
+1. Feel free to further explore these dashboards.
+1. Close the Grafana dashboard and terminate the corresponding `istioctl dashboard` command.
+1. Uninstall grafane:
+    ```
+    kubectl delete -f istio-1.15.0/samples/addons/grafana.yaml
+    ```{{exec}}
 
 ## Next
 

@@ -2,7 +2,7 @@ A Kubernetes cluster was provisioned on your behalf.
 
 The following are already deployed to the cluster:
 - Istio 1.15.0 
-- Istio addons (Kiali 1.5.5, Prometheus, Grafana, Jaeger, Zipkin)
+- Istio addons (Kiali 1.5.5, Prometheus, Grafana, Jaeger)
 
 You can interact with the cluster using `kubectl` (or its configured alias, `k`).
 
@@ -23,7 +23,18 @@ This will be done in a later lab, so stay tuned.
 ## Expose Kiali UI
 
 Throughout this scenario we will use Kiali as a user interface to manage our mesh.
- 
+
+Kiali can help you in operation tasks such as:
+1. Enable sidecar injection to existing workloads
+2. Create routing rules
+3. Generate optimized Istio configurations from observed state
+
+Kiali has observability features including:
+1. Visualize your mesh as graphs
+2. Monitor mesh metrics
+3. Display workload access logs
+4. Distributed request tracing visibility
+
 Expose the Kiali dashboard with the following command:
 
 ```

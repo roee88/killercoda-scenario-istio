@@ -19,7 +19,9 @@ istioctl install -f install-manifest.yaml -y
 istioctl verify-install
 
 # install addons
-kubectl apply -f istio-1.15.0/samples/addons
+kubectl apply -f istio-1.15.0/samples/addons/prometheus.yaml
+kubectl apply -f istio-1.15.0/samples/addons/kiali.yaml
+kubectl rollout status deployment/prometheus -n istio-system
 kubectl rollout status deployment/kiali -n istio-system
 
 # mark init finished

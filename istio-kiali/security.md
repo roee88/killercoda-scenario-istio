@@ -121,7 +121,7 @@ As part of the example, we can show how a ServiceAccount can be added into an ex
 
 ![AuthorizationPolicy Edit](https://kiali.io/images/tutorial/06-01-authorizationpolicy-edit.png "AuthorizationPolicy Edit")
 
-As expected, now we can see that *travels-v1* workload accepts requests from all *travel-portal* namespace workloads, but *travels-v2* and *travels-v3* continue rejecting requests from *loadtester* source.
+As expected, now we can see that *travels-v1* workload accepts requests from all *travel-portal* namespace workloads, but *travels-v2* continue rejecting requests from *loadtester* source.
 
 ![Travels v1 AuthorizationPolicy](https://kiali.io/images/tutorial/06-01-travels-v1-authorizationpolicy.png "Travels v1 AuthorizationPolicy")
 

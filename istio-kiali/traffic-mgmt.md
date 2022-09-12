@@ -1,3 +1,5 @@
+> Note: the images in this lab are different from what you will observe since they include a v3 of the travels service whereas this lab only deploys v1 and v2
+
 The Travel Demo application has several portals deployed on the *travel-portal* namespace consuming the *travels* service deployed on the *travel-agency* namespace.
 
 The *travels* service is backed by a single workload called *travels-v1* that receives requests from all portal workloads.
@@ -6,20 +8,17 @@ At a moment of the lifecycle the business needs of the portals may differ and ne
 
 This step will show how to route requests dynamically to multiple versions of the *travels* service.
 
-## 1. Deploy *travels-v2* and *travels-v3* workloads
 
-To deploy the new versions of the *travels* service execute the following commands:
+
+## 1. Deploy *travels-v2* workload
+
+To deploy the new version of the *travels* service execute the following commands:
 
 ```
 kubectl apply -f travels-v2.yaml -n travel-agency
-kubectl apply -f travels-v3.yaml -n travel-agency
 ```{{exec}}
 
-![Travels-v2 and travels-v3](https://kiali.io/images/tutorial/05-01-travels-v2-v3.png "Travels-v2 and travels-v3")
-
 As there is no specific routing defined, when there are multiple workloads for *travels* service the requests are uniformly distributed.
-
-![Travels graph before routing](https://kiali.io/images/tutorial/05-01-travels-before-routing.png "Travels graph before routing")
 
 ## 2. Traffic routing
 
@@ -29,9 +28,8 @@ The [Traffic Management](https://istio.io/latest/docs/concepts/traffic-managemen
 
 In our scenario we would like to perform the following routing logic:
 
-- All traffic from *travels.uk* routed to *travels-v1*
-- All traffic from *viaggi.it* routed to *travels-v2*
-- All traffic from *voyages.fr* routed to *travels-v3*
+- All traffic from *viaggi.it* routed to *travels-v1*
+- All traffic from *voyages.fr* routed to *travels-v2*
 
 Portal workloads use HTTP/1.1 protocols to call the *travels* service, so one strategy could be to use the HTTP headers to define the matching condition.
 
@@ -49,9 +47,9 @@ Then tracing will populate custom tags with the *portal*, *device*, *user* and *
 
 ![Travels Service Request Routing](https://kiali.io/images/tutorial/05-01-travels-request-routing.png "Travels Service Request Routing")
 
-We will define three "Request Matching" rules as part of this request routing. Define all three rules before clicking the Create button.
+We will define three "Request Matching" rules as part of this request routing. Define both rules before clicking the Create button.
 
-In the first rule, we will add a request match for when the *portal* header has the value of *travels.uk*.
+In the first rule, we will add a request match for when the *portal* header has the value of *viaggi.it*.
 
 Define the exact match, like below, and click the "Add Match" button to update the "Matching selected" for this rule.
 
@@ -61,9 +59,9 @@ Move to "Route To" tab and update the destination for this "Request Matching" ru
 
 ![Route To](https://kiali.io/images/tutorial/05-01-route-to.png "Route To")
 
-Add similar rules to route traffic from *viaggi.it* to *travels-v2* workload and from *voyages.fr* to *travels-v3* workload.
+Add similar rules to route traffic from *voyages.fr* to *travels-v2* workload.
 
-When the three rules are defined you can use "Create" button to generate all Istio configurations needed for this scenario. Note
+When the rules defined you can use "Create" button to generate all Istio configurations needed for this scenario. Note
 that the rule ordering does not matter in this scenario.
 
 ![Rules Defined](https://kiali.io/images/tutorial/05-01-rules-defined.png "Rules Defined")
@@ -146,21 +144,21 @@ As part of this step you can update the Fault Injection scenario to test differe
 
 ## 4. Traffic Shifting
 
-In the previous [Request Routing](#request-routing) step we have deployed two new versions of the *travels* service using the *travels-v2* and *travels-v3* workloads.
+In the previous [Request Routing](#request-routing) step we have deployed a new version of the *travels* service using the *travels-v2* workload.
 
-That scenario showed how Istio can route specific requests to specific workloads. It was configured such that each portal deployed in the *travel-portal* namespace (*travels.uk*, *viaggi.it* and *voyages.fr*) were routed to a specific *travels* workload (*travels-v1*, *travels-v2* and *travels-v3*).
+That scenario showed how Istio can route specific requests to specific workloads. It was configured such that each portal deployed in the *travel-portal* namespace (*viaggi.it* and *voyages.fr*) were routed to a specific *travels* workload (*travels-v1* and *travels-v2*).
 
-This Traffic Shifting step will simulate a new scenario: the new *travels-v2* and *travels-v3* workloads will represent new improvements for the *travels* service that will be used by all requests.
+This Traffic Shifting step will simulate a new scenario: the new *travels-v2* workload will represent new improvements for the *travels* service that will be used by all requests.
 
-These new improvements implemented in *travels-v2* and *travels-v3* represent two alternative ways to address a specific problem. Our goal is to test them before deciding which one to use as a next version.
+These new improvements implemented in *travels-v2* represent an alternative way to address a specific problem. Our goal is to test the behavior of the new version.
 
-At the beginning we will send 80% of the traffic into the original *travels-v1* workload, and will split 10% of the traffic each on *travels-v2* and *travels-v3*.
+At the beginning we will send 80% of the traffic into the original *travels-v1* workload, and 20% of the traffic to *travels-v2*.
 
 ### 4.1. Use the Traffic Shifting Wizard on *travels* service
 
 ![Traffic Shifting Action](https://kiali.io/images/tutorial/05-03-traffic-shifting-action.png "Traffic Shifting Action")
 
-Create a scenario with 80% of the traffic distributed to *travels-v1* workload and 10% of the traffic distributed each to *travels-v2* and *travels-v3*.
+Create a scenario with 80% of the traffic distributed to *travels-v1* workload and 20% of the traffic distributed to *travels-v2*.
 
 ![Split Traffic](https://kiali.io/images/tutorial/05-03-split-traffic.png "Split Traffic")
 
@@ -168,16 +166,14 @@ Create a scenario with 80% of the traffic distributed to *travels-v1* workload a
 
 ![Travels Graph](https://kiali.io/images/tutorial/05-03-travels-graph.png "Travels Graph")
 
-### 4.3. Compare *travels* workload and assess new changes proposed in *travels-v2* and *travels-v3*
+### 4.3. Compare *travels* workload and assess new changes proposed in *travels-v2*
 
 Istio Telemetry is grouped per logical application. That has the advantage of easily comparing different but related workloads, for one or more services.
 
-In our example, we can use the "Inbound Metrics" and "Outbound Metrics" tabs in the *travels* application details, group by "Local version" and compare how *travels-v2* and *travels-v3* are working.
+In our example, we can use the "Inbound Metrics" and "Outbound Metrics" tabs in the *travels* application details, group by "Local version" and compare how *travels-v1* and *travels-v2* are working.
 
 ![Compare Travels Workloads](https://kiali.io/images/tutorial/05-03-compare-local-travels-version.png "Compare Travels Workloads")
 ![Compare Travels Workloads](https://kiali.io/images/tutorial/05-03-compare-local-travels-version-2.png "Compare Travels Workloads")
-
-The charts show that the Traffic distribution is working accordingly and 80% is being distributed to *travels-v1* workload and they also show no big differences between *travels-v2* and *travels-v3* in terms of request duration.
 
 ### 4.4. Update or delete Istio Configuration
 
@@ -364,28 +360,25 @@ This step will show how to apply mirrored traffic into the *travels* service.
 
 We will simulate the following:
 
-- *travels-v1* is the original traffic and it will keep 80% of the traffic
-- *travels-v2* is the new version to deploy, it's being evaluated and it will get 20% of the traffic to compare against *travels-v1*
-- But *travels-v3* will be considered as a new, experimental version for testing outside of the regular request path. It will be defined as a mirrored workload on 50% of the original requests.
+- *travels-v1* is the original traffic and it will keep 100% of the traffic
+- *travels-v3* will be considered as a new, experimental version for testing outside of the regular request path. It will be defined as a mirrored workload on 50% of the original requests.
 
 ![Mirrored Traffic](https://kiali.io/images/tutorial/05-07-mirrored-traffic.png "Mirrored Traffic")
 
 ### 8.2. Examine Traffic Shifting distribution from the *travels-agency* Graph
 
 Note that Istio does not report mirrored traffic telemetry from the source proxy. It is reported from the destination proxy, 
-although it is not flagged as mirrored, and therefore an edge from *travels* to the *travels-v3* workload will appear in the graph.
-Note the traffic rates reflect the expected ratio of 80/20 between *travels-v1* and *travels-v2*, with *travels-v3* at about
-half of that total.
+although it is not flagged as mirrored, and therefore an edge from *travels* to the *travels-v2* workload will appear in the graph.
 
 ![Mirrored Graph](https://kiali.io/images/tutorial/05-07-mirrored-graph.png "Mirrored Graph")
 
 This can be examined better using the "Source" and "Destination" metrics from the "Inbound Metrics" tab.
 
-The "Source" proxy, in this case the proxies injected into the workloads of *travel-portal* namespace, won't report telemetry for *travels-v3* mirrored workload.
+The "Source" proxy, in this case the proxies injected into the workloads of *travel-portal* namespace, won't report telemetry for *travels-v2* mirrored workload.
 
 ![Mirrored Source Metrics](https://kiali.io/images/tutorial/05-07-mirrored-source-metrics.png "Mirrored Source Metrics")
 
-But the "Destination" proxy, in this case the proxy injected in the *travels-v3* workload, will collect the telemetry from the mirrored traffic.
+But the "Destination" proxy, in this case the proxy injected in the *travels-v2* workload, will collect the telemetry from the mirrored traffic.
 
 ![Mirrored Destination Metrics](https://kiali.io/images/tutorial/05-07-mirrored-destination-metrics.png "Mirrored Destination Metrics")
 
