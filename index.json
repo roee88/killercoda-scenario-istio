@@ -1,0 +1,69 @@
+{
+  "title": "Istio Travel Demo",
+  "description": "An Introduction to Istio using Kiali",
+  "details": {
+      "steps": [
+      {
+        "title": "Introduction",
+        "text": "intro.md"
+      },
+      {
+        "title": "Understanding the Travel application",
+        "text": "application.md"
+      },
+      {
+        "title": "Setup",
+        "text": "setup.md"
+      },
+      {
+        "title": "Deployment",
+        "text": "deploy.md"
+      },
+      {
+        "title": "Ingress Gateway",
+        "text": "gateway.md"
+      },
+      {
+        "title": "Observability",
+        "text": "observability.md"
+      },
+      {
+        "title": "Traffic Management",
+        "text": "traffic-mgmt.md"
+      },
+      {
+        "title": "Security",
+        "text": "security.md"
+      }
+    ],
+    "intro": {
+      "text": "init/init.md",
+      "background": "init/background.sh",
+      "foreground": "init/foreground.sh"
+    },
+    "finish": {
+      "title": "Congratulations",
+      "text": "summary.md"
+    },
+    "assets": {
+      "host01": [
+        {"file": ".inputrc", "target": "/root"},
+        {"file": ".vimrc", "target": "/root"},
+        {"file": "wait-background.sh", "target": "/ks", "chmod": "+x"},
+        {"file": "install-manifest.yaml", "target": "/root"},
+        {"file": "travel_agency.yaml", "target": "/root"},
+        {"file": "travel_portal.yaml", "target": "/root"},
+        {"file": "travel_control.yaml", "target": "/root"},
+        {"file": "travels-v2.yaml", "target": "/root"},
+        {"file": "travels-v3.yaml", "target": "/root"},
+        {"file": "mysql-v2.yaml", "target": "/root"},
+        {"file": "mysql-v3.yaml", "target": "/root"},
+        {"file": "travel_loadtester.yaml", "target": "/root"},
+        {"file": "mtls-strict.yaml", "target": "/root"}
+      ]
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

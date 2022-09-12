@@ -1,0 +1,36 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  profile: default
+  components:
+
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        resources:
+          requests:
+            cpu: 0m # CHANGED
+            memory: 0Mi # CHANGED
+
+    pilot:
+      k8s:
+        resources:
+          requests:
+            cpu: 0m # CHANGED
+            memory: 0Mi # CHANGED
+
+  values:
+    global:
+      proxy:
+        resources:
+          requests:
+            cpu: 0m # CHANGED
+            memory: 0Mi # CHANGED
+
+    pilot:
+      autoscaleEnabled: false
+
+    gateways:
+      istio-ingressgateway:
+        autoscaleEnabled: false
