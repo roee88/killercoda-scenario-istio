@@ -191,12 +191,15 @@ Our database specialist is suggesting two approaches and proposes to prepare two
 
 This step will show how the "Traffic Shifting" strategy can be applied to TCP services to test which new database indexing strategy works better.
 
-### 5.1. Deploy *mysqldb-v2* and *mysqldb-v3* workloads
+### 5.1. Deploy *mysqldb-v2* 
 
 To deploy the new versions of the *mysqldb* service execute the commands:
 
 ```
 kubectl apply -f mysql-v2.yaml -n travel-agency
+```{{exec}}
+
+```
 kubectl apply -f mysql-v3.yaml -n travel-agency
 ```{{exec}}
 
@@ -361,7 +364,7 @@ This step will show how to apply mirrored traffic into the *travels* service.
 We will simulate the following:
 
 - *travels-v1* is the original traffic and it will keep 100% of the traffic
-- *travels-v3* will be considered as a new, experimental version for testing outside of the regular request path. It will be defined as a mirrored workload on 50% of the original requests.
+- *travels-v2* will be considered as a new, experimental version for testing outside of the regular request path. It will be defined as a mirrored workload on 50% of the original requests.
 
 ![Mirrored Traffic](https://kiali.io/images/tutorial/05-07-mirrored-traffic.png "Mirrored Traffic")
 
